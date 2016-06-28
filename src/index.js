@@ -45,9 +45,13 @@ function promptForAuthentication() {
 }
 
 promptForAuthentication().then(() => {
-  getMyIssues().then(string => {
-    process.stdout.write(string);
-  });
+  getMyIssues().then(
+    string => {
+      process.stdout.write(string);
+    },
+    err => {
+      process.stdout.write(err);
+    });
 });
 
 
