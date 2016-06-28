@@ -1,5 +1,6 @@
 import fetch from 'node-fetch';
 import { getAuthHeader } from './auth';
+import colors from 'colors/safe';
 
 let jiraUrl = '';
 
@@ -68,6 +69,34 @@ export function getInfoByIssueId(issueId) {
   }
 }
 
+function getColor(issue) {
+  let color;
+  switch (issue.fields.priority.name) {
+    case '0':
+    case '1':
+      color = 'red';
+      break;
+
+    case '2':
+      color = 'yellow';
+      break;
+
+    case '3':
+    default:
+      color = 'green';
+  }
+  return colors[color];
+}
+
+function renderIssue(issue) {
+  const color = getColor(issue);
+
+  return color(`${issue.fields.priority.name} ${issue.fields.issuetype.name}, ${issue.fields.status.name}
+${issue.key}: ${issue.fields.summary}
+
+`);
+}
+
 export function getMyIssues() {
   const jql = 'assignee = currentUser() AND resolution = Unresolved order by updated DESC';
   const auth = getAuthHeader();
@@ -85,14 +114,8 @@ export function getMyIssues() {
   return fetch(url, options)
   .then(handleBadResponse)
   .then(resp => resp.json())
-  .then(resp =>
-'\n' + resp.issues.map(issue =>
-`[priority: ${issue.fields.priority.name} ${issue.fields.issuetype.name}]
-  ${issue.key}: ${issue.fields.summary}, ${issue.fields.status.name}
-
-`
-    ).join('')
-  ).catch(err => {
+  .then(resp => '\n' + resp.issues.map(renderIssue).join(''))
+  .catch(err => {
     process.stdout.write(`unable to getMyIssues: ${err.message}\n`);
   });
 }
