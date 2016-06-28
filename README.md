@@ -1,10 +1,11 @@
 # jira-info
 
-use .jira-inforc to store your username (password too, but probably not a good idea)
+Use `.jira-inforc` in the current working directory to store your username (password too, but probably not a good idea).  You will be prompted for anything missing from the file.
 
 ```js
 {
-  "username": "jeremy.greer"
+  "username": "some.dude",
+  "password": "correcthorsebatterystaple"
 }
 
 ```

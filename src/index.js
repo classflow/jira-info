@@ -3,37 +3,46 @@
 import prompt from 'prompt';
 import { setCredentials } from './auth';
 import { getMyIssues } from './jira';
+import { getConfig } from './config';
 
 function promptForAuthentication() {
   return new Promise((resolve, reject) => {
-    prompt.message = '';
+    const config = getConfig();
+    const properties = {};
 
-    const schema = {
-      properties: {
-        username: {
-          description: 'Jira username',
-          required: true,
-        },
-        password: {
-          description: 'Jira password',
-          hidden: true,
-        },
-      },
-    };
+    if (!config || !config.username) {
+      properties.username = {
+        description: 'Jira username',
+        required: true,
+      };
+    }
 
-    prompt.start();
+    if (!config || !config.password) {
+      properties.password = {
+        description: 'Jira password',
+        required: true,
+        hidden: true,
+      };
+    }
 
-    prompt.get(schema, (err, result) => {
-      return err
+    if (Object.keys(properties).length) {
+      prompt.message = '';
+      const schema = { properties };
+
+      prompt.start();
+      prompt.get(schema, (err, result) => {
+        return err
         ? reject(err)
         : resolve(
           setCredentials(result.username, result.password)
         );
-    });
+      });
+    } else {
+      setCredentials(config.username, config.password)
+      resolve();
+    }
   });
 }
-
-
 
 promptForAuthentication().then(() => {
   getMyIssues().then(string => {
