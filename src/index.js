@@ -68,15 +68,54 @@ export function getInfoByIssueId(issueId) {
   }
 }
 
+function getMyIssues() {
+  const jql = 'assignee = currentUser() AND resolution = Unresolved order by updated DESC';
+  const auth = getAuthHeader();
+  const url = 'https://jira.prometheanjira.com/rest/api/2/search';
+  const options = {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: auth,
+    },
+    method: 'POST',
+    body: JSON.stringify({
+      jql,
+    }),
+  };
+
+  return new Promise((resolve, reject) => {
+    fetch(url, options)
+    .then(resp => {
+      if (resp.ok) {
+        return resolve(resp.json());
+      } else {
+        reject(new Error('unable to handle request'));
+      }
+    });
+  });
+}
+
 
 promptForAuthentication().then(() => {
-  const issueId = process.argv[2];
-  console.log('lookup issueId', issueId);
+  // const issueId = process.argv[2];
+  // console.log('lookup issueId', issueId);
   // getInfoByIssueId(issueId).then(issue => {
   //   console.log(issue);
   // }, err => {
   //   console.log(err);
   // });
+
+  getMyIssues().then(result => {
+    result.issues.map(issue => {
+      const info =
+`[priority: ${issue.fields.priority.name} ${issue.fields.issuetype.name}]
+${issue.key}: ${issue.fields.summary}, ${issue.fields.status.name}
+
+`;
+      process.stdout.write(info);
+    });
+  });
 });
 
 
