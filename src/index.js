@@ -8,28 +8,26 @@ import { getConfig } from './config';
 function getRequiredInfo() {
   return new Promise((resolve, reject) => {
     const config = getConfig();
-    const properties = {};
-
-    if (!config || !config['jira-url']) {
-      properties['jira-url'] = {
+    const properties = {
+      ['jira-url']: {
         description: 'Jira url',
         required: true,
-      };
-    }
-
-    if (!config || !config.username) {
-      properties.username = {
+      },
+      username: {
         description: 'Jira username',
         required: true,
-      };
-    }
-
-    if (!config || !config.password) {
-      properties.password = {
+      },
+      password: {
         description: 'Jira password',
         required: true,
         hidden: true,
-      };
+      },
+    };
+
+    if (config) {
+      Object.keys(config).map(key => {
+        delete properties[key];
+      });
     }
 
     if (Object.keys(properties).length) {
@@ -64,26 +62,9 @@ getRequiredInfo().then(
       },
       err => {
         process.stdout.write(err);
-      })
-      .catch(err => {
-        console.log(err);
       });
   },
   err => {
     console.log('unable to get required info', err);
   }
-).catch(err => {
-  console.log('crap', err);
-});
-
-
-
-// wait for user to do something
-// process.stdin.setEncoding('utf8');
-//
-// process.stdin.on('readable', () => {
-//   var chunk = process.stdin.read();
-//   if (chunk !== null) {
-//     process.stdout.write(`data: ${chunk}`);
-//   }
-// });
+);

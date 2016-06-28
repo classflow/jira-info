@@ -12,7 +12,7 @@ function getCaptchaUrl(resp) {
   return header.split('=').pop();
 }
 
-function checkResponseAuthentication(resp) {
+function handleBadResponse(resp) {
   if (!resp.ok) {
     switch(resp.status) {
       case 403:
@@ -25,9 +25,11 @@ function checkResponseAuthentication(resp) {
       case 401:
       throw new Error('user is not authenticated');
 
+      case 404:
+      throw new Error('appears to be an invalid Jira url');
+
       default:
-      // console.log(resp);
-      throw new Error(resp.statusText);
+      throw new Error(`${resp.status}: ${resp.statusText}`);
     }
   } else {
     return resp;
@@ -81,7 +83,7 @@ export function getMyIssues() {
   };
 
   return fetch(url, options)
-  .then(checkResponseAuthentication)
+  .then(handleBadResponse)
   .then(resp => resp.json())
   .then(resp =>
 '\n' + resp.issues.map(issue =>

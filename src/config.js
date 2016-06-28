@@ -3,8 +3,9 @@ import path from 'path';
 
 export function getConfig() {
   let config = null;
-
+  // TODO: check other paths ~/.jira-inforc
   const rcPath = path.join(process.cwd(), '.jira-inforc');
+
   try {
     const file = fs.readFileSync(rcPath, 'utf8');
 
