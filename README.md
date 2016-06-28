@@ -2,6 +2,8 @@
 
 Get a summary of your open Jira issues from the command line.
 
+![screen shot]
+
 ## Installation
 
 ```sh
@@ -44,3 +46,4 @@ To skip providing this info every time, create a `.jira-inforc` file.  **jira-in
 kickstarted by [npm-boom][npm-boom]
 
 [npm-boom]: https://github.com/reergymerej/npm-boom
+[screen shot]: https://cloud.githubusercontent.com/assets/1720010/16429998/826e6d76-3d47-11e6-93f3-4103b0026549.png
