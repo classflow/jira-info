@@ -65,6 +65,6 @@ getRequiredInfo().then(
       });
   },
   err => {
-    console.log('unable to get required info', err);
+    console.log('unable to get required info', err); //eslint-disable-line
   }
 );
