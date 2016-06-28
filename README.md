@@ -1,6 +1,13 @@
 # jira-info
 
+use .jira-inforc to store your username (password too, but probably not a good idea)
 
+```js
+{
+  "username": "jeremy.greer"
+}
+
+```
 
 
 

@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 
 import prompt from 'prompt';
-import fetch from 'node-fetch';
-import { getAuthHeader, setCredentials } from './auth';
+import { setCredentials } from './auth';
 import { getMyIssues } from './jira';
 
 function promptForAuthentication() {
