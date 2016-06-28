@@ -2,13 +2,20 @@
 
 import prompt from 'prompt';
 import { setCredentials } from './auth';
-import { getMyIssues } from './jira';
+import { setUrl, getMyIssues } from './jira';
 import { getConfig } from './config';
 
-function promptForAuthentication() {
+function getRequiredInfo() {
   return new Promise((resolve, reject) => {
     const config = getConfig();
     const properties = {};
+
+    if (!config || !config['jira-url']) {
+      properties['jira-url'] = {
+        description: 'Jira url',
+        required: true,
+      };
+    }
 
     if (!config || !config.username) {
       properties.username = {
@@ -33,25 +40,40 @@ function promptForAuthentication() {
       prompt.get(schema, (err, result) => {
         return err
         ? reject(err)
-        : resolve(
-          setCredentials(result.username, result.password)
-        );
+        : resolve((() => {
+          const username = (config && config.username) || result.username;
+          const password = (config && config.password) || result.password;
+          const jiraUrl = (config && config['jira-url']) || result['jira-url'];
+          setCredentials(username, password);
+          setUrl(jiraUrl);
+        })());
       });
     } else {
       setCredentials(config.username, config.password)
+      setUrl(config['jira-url']);
       resolve();
     }
   });
 }
 
-promptForAuthentication().then(() => {
-  getMyIssues().then(
-    string => {
-      process.stdout.write(string);
-    },
-    err => {
-      process.stdout.write(err);
-    });
+getRequiredInfo().then(
+  () => {
+    getMyIssues().then(
+      string => {
+        process.stdout.write(string);
+      },
+      err => {
+        process.stdout.write(err);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  },
+  err => {
+    console.log('unable to get required info', err);
+  }
+).catch(err => {
+  console.log('crap', err);
 });
 
 

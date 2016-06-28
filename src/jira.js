@@ -1,6 +1,8 @@
 import fetch from 'node-fetch';
 import { getAuthHeader } from './auth';
 
+let jiraUrl = '';
+
 function needsCaptcha(resp) {
   return resp.headers.get('x-seraph-loginreason') === 'AUTHENTICATION_DENIED';
 }
@@ -32,12 +34,16 @@ function checkResponseAuthentication(resp) {
   }
 }
 
+export function setUrl(url) {
+  jiraUrl = url;
+}
+
 export function getInfoByIssueId(issueId) {
   const auth = getAuthHeader();
   if (!auth) {
     return Promise.reject(new Error('Please authenticate.'));
   } else {
-    const url = `https://jira.prometheanjira.com/rest/api/2/issue/${issueId}?fields=status,assignee,description`;
+    const url = `${jiraUrl}/rest/api/2/issue/${issueId}?fields=status,assignee,description`;
     const options = {
       headers: {
         Accept: 'application/json',
@@ -63,7 +69,7 @@ export function getInfoByIssueId(issueId) {
 export function getMyIssues() {
   const jql = 'assignee = currentUser() AND resolution = Unresolved order by updated DESC';
   const auth = getAuthHeader();
-  const url = 'https://jira.prometheanjira.com/rest/api/2/search';
+  const url = `${jiraUrl}/rest/api/2/search`;
   const options = {
     headers: {
       Accept: 'application/json',
