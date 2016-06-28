@@ -30,5 +30,19 @@
     "jira-info": "lib/index.js"
   },
   "description": "Get a summary of your open Jira issues from the command line.",
-  "author": ""
+  "author": "Jeremy Greer <jeremy.greer@prometheanworld.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/classflow/jira-info.git"
+  },
+  "keywords": [
+    "jira",
+    "summary",
+    "issues",
+    "cli"
+  ],
+  "bugs": {
+    "url": "https://github.com/classflow/jira-info/issues"
+  },
+  "homepage": "https://github.com/classflow/jira-info#readme"
 }
