@@ -98,7 +98,7 @@ ${issue.key}: ${issue.fields.summary}
 }
 
 export function getMyIssues() {
-  const jql = 'assignee = currentUser() AND resolution = Unresolved order by updated DESC';
+  const jql = 'assignee = currentUser() AND resolution = Unresolved order by priority DESC';
   const auth = getAuthHeader();
   const url = `${jiraUrl}/rest/api/2/search`;
   const options = {
