@@ -22,7 +22,7 @@ In order to query Jira, **jira-info** needs to know the following.
 * **Username** - Your Jira username.  
 * **Password** - Your Jira password.  
 
-To skip providing this info every time, create a `.jira-inforc` file.  **jira-info** will check for this file in the current working directory and in your home directory and use its values.  You can store your password, *but that's probably not a good idea*.  You will be prompted for anything missing from the file as needed.
+To skip providing this info every time, create a `.jira-queryrc` file.  **jira-info** will check for this file in the current working directory and in your home directory and use its values.  You can store your password, *but that's probably not a good idea*.  You will be prompted for anything missing from the file as needed.
 
 ```js
 {
