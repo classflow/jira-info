@@ -37,7 +37,7 @@ To skip providing this info every time, create a `.jira-inforc` file.  **jira-in
 **jira-info** provides pretty obvious errors when there's a problem fetching data.  If something doesn't go right, the answer is probably in the console.  One worth mentioning, though, is CAPTCHA.  There's no way around that through the API, so you'll have to go to your browser and deal with it.  If Jira won't let you in because of this, you'll see an error with a URL pointing to the CAPTCHA challenge.  Handle that in the browser and you should be back in business.
 
 
-
+[CHANGELOG][changelog]
 
 
 
@@ -47,3 +47,4 @@ kickstarted by [npm-boom][npm-boom]
 
 [npm-boom]: https://github.com/reergymerej/npm-boom
 [screen shot]: https://cloud.githubusercontent.com/assets/1720010/16429998/826e6d76-3d47-11e6-93f3-4103b0026549.png
+[changelog]: CHANGELOG.md

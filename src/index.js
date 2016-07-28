@@ -1,70 +1,35 @@
 #!/usr/bin/env node
 
-import prompt from 'prompt';
-import { setCredentials } from './auth';
-import { setUrl, getMyIssues } from './jira';
-import { getConfig } from './config';
+import jiraQuery from 'jira-query';
+import colors from 'colors/safe';
 
-function getRequiredInfo() {
-  return new Promise((resolve, reject) => {
-    const config = getConfig();
-    const properties = {
-      ['jira-url']: {
-        description: 'Jira url',
-        required: true,
-      },
-      username: {
-        description: 'Jira username',
-        required: true,
-      },
-      password: {
-        description: 'Jira password',
-        required: true,
-        hidden: true,
-      },
-    };
+function getColor(issue) {
+  let color;
+  switch (issue.fields.priority.name) {
+    case '0':
+    case '1':
+      color = 'red';
+      break;
 
-    if (config) {
-      Object.keys(config).map(key => {
-        delete properties[key];
-      });
-    }
+    case '2':
+      color = 'yellow';
+      break;
 
-    if (Object.keys(properties).length) {
-      prompt.message = '';
-      const schema = { properties };
-
-      prompt.start();
-      prompt.get(schema, (err, result) => {
-        return err
-        ? reject(err)
-        : resolve((() => {
-          const username = (config && config.username) || result.username;
-          const password = (config && config.password) || result.password;
-          const jiraUrl = (config && config['jira-url']) || result['jira-url'];
-          setCredentials(username, password);
-          setUrl(jiraUrl);
-        })());
-      });
-    } else {
-      setCredentials(config.username, config.password)
-      setUrl(config['jira-url']);
-      resolve();
-    }
-  });
+    case '3':
+    default:
+      color = 'green';
+  }
+  return colors[color];
 }
 
-getRequiredInfo().then(
-  () => {
-    getMyIssues().then(
-      string => {
-        process.stdout.write(string);
-      },
-      err => {
-        process.stdout.write(err);
-      });
-  },
-  err => {
-    console.log('unable to get required info', err); //eslint-disable-line
-  }
-);
+function renderIssue(issue) {
+  const color = getColor(issue);
+  return color(`${issue.fields.priority.name} ${issue.fields.issuetype.name}, ${issue.fields.status.name}
+${issue.key}: ${issue.fields.summary}
+
+`);
+}
+
+jiraQuery.getMyOpenIssues()
+.then(issues => '\n' + issues.map(renderIssue).join(''))
+.then(issues => process.stdout.write(issues));

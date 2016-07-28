@@ -1,5 +1,5 @@
 {
-  "version": "1.1.1",
+  "version": "2.0.0",
   "name": "jira-info",
   "main": "lib/index.js",
   "scripts": {
@@ -18,14 +18,12 @@
   },
   "dependencies": {
     "colors": "^1.1.2",
-    "node-fetch": "^1.5.3",
-    "prompt": "^1.0.0"
+    "jira-query": "^1.0.0"
   },
   "license": "ISC",
   "directories": {
     "test": "test"
   },
-  "preferGlobal": "true",
   "bin": {
     "jira-info": "lib/index.js"
   },
